@@ -43,7 +43,7 @@ opt.scrolloff = 10
 opt.showmode = false
 
 
-vim.keymap.set("n", "<leader>fe", ":Explore<CR>", { desc = 'Open [F]ile [E]xplorer'})
+vim.keymap.set("n", "<C-b>", ":Lex<CR>:vertical resize 30<CR>", { desc = 'Open [F]ile [E]xplorer'})
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')

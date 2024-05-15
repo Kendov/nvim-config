@@ -61,22 +61,21 @@ return {
     },
     { 'kosayoda/nvim-lightbulb' },
     {
-        'lewis6991/gitsigns.nvim',
-        opts = {
-            signs = {
-                add = { text = '+' },
-                change = { text = '~' },
-                delete = { text = '_' },
-                topdelete = { text = '‾' },
-                changedelete = { text = '~' },
-            },
-        },
-    },
-    {
         'nvim-lualine/lualine.nvim',
         event = 'VeryLazy',
         dependencies = { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font},
         opts = {}
+    },
+    {
+        "nvim-neo-tree/neo-tree.nvim",
+        branch = "v3.x",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+            "MunifTanjim/nui.nvim",
+            -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+        },
+        cmd = { "Neotree" }
     },
     { "rcarriga/nvim-notify", opts = {} },
     -- {
