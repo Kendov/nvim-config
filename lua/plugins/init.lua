@@ -2,6 +2,16 @@ return {
 
     "tpope/vim-sleuth",
     { "folke/neoconf.nvim", cmd = "Neoconf" },
+    {
+        "ggandor/leap.nvim",
+        event = "VeryLazy",
+        config = function ()
+            local l = require('leap')
+            vim.keymap.set({'n', 'x', 'o'}, 's', function() l.leap { } end)
+            vim.keymap.set({'n', 'x', 'o'}, 'S',  function() l.leap { backward = true } end)
+            vim.keymap.set({'n', 'x', 'o'}, 'gs', function() l.get_enterable_windows() end)
+        end
+    },
     "folke/neodev.nvim",
     {
         -- Useful plugin to show you pending keybinds.
@@ -113,18 +123,7 @@ return {
         event = 'InsertEnter',
         dependencies = {
             -- Snippet Engine & its associated nvim-cmp source
-            {
-                'L3MON4D3/LuaSnip',
-                build = (function()
-                    -- Build Step is needed for regex support in snippets
-                    -- This step is not supported in many windows environments
-                    -- Remove the below condition to re-enable on windows
-                    if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
-                        return
-                    end
-                    return 'make install_jsregexp'
-                end)(),
-            },
+            'L3MON4D3/LuaSnip',
             'saadparwaiz1/cmp_luasnip',
 
             -- Adds other completion capabilities.
@@ -143,7 +142,7 @@ return {
             -- See `:help cmp`
             local cmp = require 'cmp'
             local luasnip = require 'luasnip'
-            luasnip.config.setup {}
+            -- luasnip.config.setup {}
 
             cmp.setup {
                 snippet = {
@@ -201,15 +200,18 @@ return {
         end,
     },
     {
-        'folke/tokyonight.nvim',
+        -- neovim themes
+        -- 'folke/tokyonight.nvim',
+        'navarasu/onedark.nvim',
         lazy = false, -- make sure we load this during startup if it is your main colorscheme
         priority = 1000, -- make sure to load this before all the other start plugins
         config = function()
             -- Load the colorscheme here
-            vim.cmd.colorscheme 'tokyonight-night'
+            -- vim.cmd.colorscheme 'tokyonight-night'
+            vim.cmd.colorscheme 'onedark'
 
             -- You can configure highlights by doing something like
-            vim.cmd.hi 'Comment gui=none'
+            -- vim.cmd.hi 'Comment gui=none'
         end,
     },
 }

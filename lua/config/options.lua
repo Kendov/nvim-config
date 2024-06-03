@@ -42,8 +42,19 @@ opt.cursorline = true
 opt.scrolloff = 10
 opt.showmode = false
 
+-- netrw config
+vim.g.netrw_special_syntax = 3
+vim.g.netrw_banner = 0
+vim.g.netrw_liststyle = 3
+vim.g.netrw_preview = 1
+vim.g.netrw_altv = 1
+vim.g.netrw_winsize = 80
+vim.g.netrw_keepdir=0
+
 
 vim.keymap.set("n", "<C-b>", ":Lex<CR>:vertical resize 30<CR>", { desc = 'Open [F]ile [E]xplorer'})
+-- Save with ctr + s
+vim.keymap.set("n", "<C-s>", ":w<CR>", { desc = 'Save File'})
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -53,3 +64,13 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking (copying) text',
+  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+})
+
