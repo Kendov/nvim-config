@@ -13,7 +13,8 @@ return {
     },
     {
         'nvim-telescope/telescope.nvim',
-        branch = '0.1.x',
+            branch = 'master',
+        -- branch = '0.1.x',
         dependencies = {
             'nvim-lua/plenary.nvim',
             -- { 'nvim-telescope/telescope-ui-select.nvim', opts = {} },
@@ -32,6 +33,21 @@ return {
         },
         config = function()
             local builtin = require('telescope.builtin')
+            require('telescope').setup({
+                -- defaults = {
+                --     path_display = function(opts, path)
+                --         local tail = require("telescope.utils").path_tail(path)
+                --         return string.format("%s (%s)", tail, path)
+                --     end
+                -- }
+                defaults = {
+                    path_display = {
+                        filename_first = {
+                            reverse_directories = false
+                        }
+                    }
+                }
+            })
 
             vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[F]ind [F]iles' })
             vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind [H]elp' })

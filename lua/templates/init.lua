@@ -1,0 +1,40 @@
+-- local function injectTemplate()
+--     print("Load template!!!!!!!!!!!!!!!")
+--     -- vim.api.nvim_buf_set_text()
+--     local templatesPath = vim.fn.stdpath("config")
+--     vim.cmd("0r " .. templatesPath .. "/lua/templates/skeleton.cs")
+-- end
+--
+--
+--
+-- local group = vim.api.nvim_create_augroup("newFileTemplate", {clear = true})
+--
+--
+-- vim.api.nvim_create_autocmd("BufNewFIle", {
+--     group = group,
+--     pattern = "*.cs",
+--     callback = function()
+--         print("from event!")
+--         injectTemplate()
+--     end
+-- })
+--
+--
+--
+-- vim.api.nvim_create_autocmd("User", {
+--     group = group,
+--     pattern = "OilActionsPost",
+--     callback = function(args)
+--         if args.data.err == nil then
+--             for _, action in ipairs(args.data.actions) do
+--                 print(action.type)
+--                 print(vim.inspect(args))
+--                 if action.type == "create" then
+--                     injectTemplate()
+--                 end
+--             end
+--         end
+--     end,
+-- })
+--
+--
