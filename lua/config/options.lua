@@ -41,6 +41,7 @@ opt.inccommand = 'split'
 opt.cursorline = true
 opt.scrolloff = 10
 opt.showmode = false
+opt.laststatus = 3 -- global status line
 
 -- netrw config
 vim.g.netrw_special_syntax = 3
@@ -52,7 +53,7 @@ vim.g.netrw_winsize = 80
 vim.g.netrw_keepdir=0
 
 
-vim.keymap.set("n", "<C-b>", ":Lex<CR>:vertical resize 30<CR>", { desc = 'Open [F]ile [E]xplorer'})
+-- vim.keymap.set("n", "<C-b>", ":Lex<CR>:vertical resize 30<CR>", { desc = 'Open [F]ile [E]xplorer'})
 -- Save with ctr + s
 vim.keymap.set("n", "<C-s>", ":w<CR>", { desc = 'Save File'})
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
@@ -73,4 +74,5 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
 

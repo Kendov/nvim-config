@@ -149,6 +149,18 @@ config = function()
         -- tsserver = {},
         --
 
+        -- jsonls = {
+        --     settings = {
+        --         json = {
+        --             schemas = {
+        --                 {
+        --                     fileMatch = { 'package.json' },
+        --                     url = 'https://json.schemastore.org/package.json',
+        --                 },
+        --             },
+        --         },
+        --     },
+        -- },
         omnisharp = {},
         lua_ls = {
             -- cmd = {...},
