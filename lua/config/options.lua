@@ -6,9 +6,9 @@ local opt = vim.opt
 local default_opts = { noremap = true, silent = true }
 
 
-opt.tabstop = 4
-opt.shiftwidth = 4
-opt.softtabstop = 4
+opt.tabstop = 2
+opt.shiftwidth = 2
+opt.softtabstop = 2
 opt.expandtab = true
 opt.smartindent = true
 opt.wrap = false
@@ -54,17 +54,9 @@ vim.g.netrw_keepdir=0
 
 
 -- vim.keymap.set("n", "<C-b>", ":Lex<CR>:vertical resize 30<CR>", { desc = 'Open [F]ile [E]xplorer'})
--- Save with ctr + s
-vim.keymap.set("n", "<C-s>", ":w<CR>", { desc = 'Save File'})
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 
 vim.api.nvim_create_autocmd('TextYankPost', {

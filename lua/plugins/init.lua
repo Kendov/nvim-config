@@ -3,6 +3,13 @@ return {
   'tpope/vim-sleuth',
   { 'folke/neoconf.nvim', cmd = 'Neoconf' },
   {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+    -- use opts = {} for passing setup options
+    -- this is equalent to setup({}) function
+  },
+  {
     'ggandor/leap.nvim',
     event = 'VeryLazy',
     config = function()
