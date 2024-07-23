@@ -10,6 +10,22 @@ return {
     -- this is equalent to setup({}) function
   },
   {
+    'mbbill/undotree',
+    event = 'VeryLazy',
+    keys = {
+      {
+        "<leader>un",
+        "<Cmd>UndotreeToggle<CR>",
+        desc = "Undo tree"
+      }
+    },
+    config = function ()
+      if vim.fn.has('win32') then
+        vim.g.undotree_DiffCommand = "FC"
+      end
+    end
+  },
+  {
     'ggandor/leap.nvim',
     event = 'VeryLazy',
     config = function()

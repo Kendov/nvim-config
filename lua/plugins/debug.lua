@@ -6,110 +6,121 @@
 -- be extended to other languages as well. That's why it's called
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
-
-local dotnet = require("../util/dap-dotnet")
+local dotnet = require '../util/dap-dotnet'
 
 return {
-    event = "VeryLazy",
-    -- NOTE: Yes, you can install new plugins here!
-    'mfussenegger/nvim-dap',
-    -- NOTE: And you can specify dependencies as well
-    dependencies = {
-        -- Creates a beautiful debugger UI
-        'rcarriga/nvim-dap-ui',
-        'nvim-neotest/nvim-nio',
+  event = 'VeryLazy',
+  -- NOTE: Yes, you can install new plugins here!
+  'mfussenegger/nvim-dap',
+  -- NOTE: And you can specify dependencies as well
+  dependencies = {
+    -- Creates a beautiful debugger UI
+    'rcarriga/nvim-dap-ui',
+    'nvim-neotest/nvim-nio',
 
-        -- Installs the debug adapters for you
-        'williamboman/mason.nvim',
-        'jay-babu/mason-nvim-dap.nvim',
+    -- Installs the debug adapters for you
+    'williamboman/mason.nvim',
+    'jay-babu/mason-nvim-dap.nvim',
 
-        -- Add your own debuggers here
-        -- 'leoluz/nvim-dap-go',
-    },
-    config = function()
-        local dap = require 'dap'
-        local dapui = require 'dapui'
+    -- Add your own debuggers here
+    -- 'leoluz/nvim-dap-go',
+  },
+  config = function()
+    local dap = require 'dap'
+    local dapui = require 'dapui'
 
-        require('mason-nvim-dap').setup {
-            -- Makes a best effort to setup the various debuggers with
-            -- reasonable debug configurations
-            automatic_setup = true,
+    require('mason-nvim-dap').setup {
+      -- Makes a best effort to setup the various debuggers with
+      -- reasonable debug configurations
+      automatic_setup = true,
 
-            -- You can provide additional configuration to the handlers,
-            -- see mason-nvim-dap README for more information
-            handlers = {},
+      -- You can provide additional configuration to the handlers,
+      -- see mason-nvim-dap README for more information
+      handlers = {},
 
-            -- You'll need to check that you have the required things installed
-            -- online, please don't ask me how to install them :)
-            ensure_installed = {
-                -- Update this to ensure that you have the debuggers for the langs you want
-                'netcoredbg',
-            },
-        }
+      -- You'll need to check that you have the required things installed
+      -- online, please don't ask me how to install them :)
+      ensure_installed = {
+        -- Update this to ensure that you have the debuggers for the langs you want
+        'netcoredbg',
+      },
+    }
 
-        ---@diagnostic disable undefined field 
-        -- Basic debugging keymaps, feel free to change to your liking!
-        vim.keymap.set('n', '<F5>', function ()
-            dotnet.buildSolution(dap.continue)
-        end, { desc = 'Debug: Start/Continue' })
-        vim.keymap.set('n', '<s-F5>', dap.terminate, { desc = 'Debug: Step Into' })
-        vim.keymap.set('n', '<F11>', dap.step_into, { desc = 'Debug: Step Into' })
-        vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Debug: Step Over' })
-        vim.keymap.set('n', '<F12>', dap.step_out, { desc = 'Debug: Step Out' })
-        vim.keymap.set('n', '<F9>', dotnet.buildSolution, { desc = 'Debug: Step Out' })
-        vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-        vim.keymap.set('n', '<leader>B', function()
-            dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-        end, { desc = 'Debug: Set Breakpoint' })
+    ---@diagnostic disable undefined field
+    -- Basic debugging keymaps, feel free to change to your liking!
+    vim.keymap.set('n', '<F5>', function()
+      local input = vim.fn.confirm('Should I recompile first?', '&yes\n&no', 2)
+      if input == 1 then
+        dotnet.buildSolution(dap.continue)
+      elseif input == 2 then
+        dap.continue()
+      end
+    end, { desc = 'Debug: Start/Continue' })
+    vim.keymap.set('n', '<s-F5>', dap.terminate, { desc = 'Debug: Step Into' })
+    vim.keymap.set('n', '<F11>', dap.step_into, { desc = 'Debug: Step Into' })
+    vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Debug: Step Over' })
+    vim.keymap.set('n', '<F12>', dap.step_out, { desc = 'Debug: Step Out' })
+    -- vim.keymap.set('n', '<F9>', dotnet.buildSolution, { desc = 'Debug: Step Out' })
+    vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
+    vim.keymap.set('n', '<leader>B', function()
+      dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+    end, { desc = 'Debug: Set Breakpoint' })
 
-        -- Dap UI setup
-        -- For more information, see |:help nvim-dap-ui|
-        dapui.setup {
-            -- Set icons to characters that are more likely to work in every terminal.
-            --    Feel free to remove or use ones that you like more! :)
-            --    Don't feel like these are good choices.
-            icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-            controls = {
-                icons = {
-                    pause = '',
-                    play = '',
-                    step_into = '',
-                    step_over = '',
-                    step_out = '',
-                    step_back = '',
-                    run_last = '󰛒',
-                    terminate = '',
-                    disconnect = '',
-                },
-            },
-        }
+    -- Dap UI setup
+    -- For more information, see |:help nvim-dap-ui|
+    dapui.setup {
+      -- Set icons to characters that are more likely to work in every terminal.
+      --    Feel free to remove or use ones that you like more! :)
+      --    Don't feel like these are good choices.
+      icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
+      controls = {
+        icons = {
+          pause = '',
+          play = '',
+          step_into = '',
+          step_over = '',
+          step_out = '',
+          step_back = '',
+          run_last = '󰛒',
+          terminate = '',
+          disconnect = '',
+        },
+      },
+    }
 
-        -- luacheck:
-        -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-        vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
+    -- luacheck:
+    -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+    vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
 
-        ---@diagnostic disable: undefined-field
-        dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-        dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-        dap.listeners.before.event_exited['dapui_config'] = dapui.close
+    ---@diagnostic disable: undefined-field
+    dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+    dap.listeners.before.event_terminated['dapui_config'] = dapui.close
+    dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-        -- vim.keymap.set('n', '<leader>tt', vim.fn.findfile(vim.fn.input('path', vim.fn.getcwd() .. "/", "file"), ".;"))
+    -- vim.keymap.set('n', '<leader>tt', vim.fn.findfile(vim.fn.input('path', vim.fn.getcwd() .. "/", "file"), ".;"))
 
-        -- csharp adapter configuration
-        dap.adapters.coreclr = {
-            type = 'executable',
-            command = 'netcoredbg',
-            args = {'--interpreter=vscode'}
-        }
-        dap.configurations.cs = {
-            {
-                type = "coreclr",
-                name = "launch - netcoredbg",
-                request = "launch",
-                program = dotnet.getDebugdll,
-            },
-        }
-    end,
+    -- csharp adapter configuration
+    dap.adapters.coreclr = {
+      type = 'executable',
+      command = 'netcoredbg',
+      args = { '--interpreter=vscode' },
+    }
+    dap.configurations.cs = {
+      {
+        type = 'coreclr',
+        name = 'launch - netcoredbg',
+        request = 'launch',
+        program = dotnet.getDebugdll,
+      },
+      {
+        type = 'coreclr',
+        name = 'attach - netcoredbg',
+        request = 'attach',
+        -- cwd = function ()
+        --   vim.fn.input('Path to csproj folder: ', vim.fn.getcwd(), 'file')
+        -- end,
+        program = require('dap.utils').pick_process,
+      },
+    }
+  end,
 }
-
-

@@ -5,7 +5,10 @@ return {
     event = 'VeryLazy',
     opts = {
       open_mapping = [[<c-t>]],
+      direction = 'float',
     },
-    keys = {},
+    keys = {
+
+    },
   },
 }
