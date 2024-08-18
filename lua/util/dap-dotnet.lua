@@ -17,7 +17,7 @@ function M.buildSolution(callback)
       float_opts = {
         border = 'double',
       },
-      on_close = callback
+      on_close = vim.schedule_wrap(callback)
     })
     term:toggle()
 
@@ -28,9 +28,8 @@ end
 function M.selectProject()
   local csproj = vim.fn.glob(vim.fn.getcwd() .. '/**/*csproj', '\n', true, true)
   local selectedOption = require('dap.ui').pick_one(csproj, 'Select project:', function(name)
-    return name:match '[^/]*.csproj$'
+    return vim.fs.basename(name)
   end)
-  print(selectedOption)
   return selectedOption
 end
 function M.selectProjectFolder()
@@ -38,7 +37,6 @@ function M.selectProjectFolder()
   local selectedOption = require('dap.ui').pick_one(csproj, 'Select project:', function(name)
     return name
   end)
-  print(selectedOption)
   return selectedOption
 end
 
@@ -63,12 +61,14 @@ function M.getDebugdll()
   local targetFramework = getTargetFramework(selectedFilePath)
 
   if targetFramework == nil then
+    print("targetFramework not found")
     return nil
   end
 
   -- build dll path based on csproj path
-  local selectedfileName = selectedFilePath:match '[^/]*.csproj$'
-  local dllRoot = string.gsub(selectedFilePath, selectedfileName, '') .. 'bin/debug/'
+  local selectedfileName = vim.fs.basename(selectedFilePath)
+  local csprojCWD = vim.fs.dirname(selectedFilePath)
+  local dllRoot = csprojCWD .. '/bin/Debug/'
   local dllPath = dllRoot .. targetFramework .. '/' .. string.gsub(selectedfileName, '.csproj', '.dll')
 
   return dllPath

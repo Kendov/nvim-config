@@ -7,6 +7,10 @@
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
 local dotnet = require '../util/dap-dotnet'
+local lastRun = {
+  program = nil,
+  cwd = nil
+}
 
 return {
   event = 'VeryLazy',
@@ -50,6 +54,13 @@ return {
     -- Basic debugging keymaps, feel free to change to your liking!
     vim.keymap.set('n', '<F5>', function()
       local input = vim.fn.confirm('Should I recompile first?', '&yes\n&no', 2)
+      local useLastRun = vim.fn.confirm('Use last run?', '&yes\n&no', 2)
+
+      if useLastRun == 2 then
+        lastRun.cwd = nil
+        lastRun.program = nil
+      end
+
       if input == 1 then
         dotnet.buildSolution(dap.continue)
       elseif input == 2 then
@@ -61,10 +72,18 @@ return {
     vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Debug: Step Over' })
     vim.keymap.set('n', '<F12>', dap.step_out, { desc = 'Debug: Step Out' })
     -- vim.keymap.set('n', '<F9>', dotnet.buildSolution, { desc = 'Debug: Step Out' })
-    vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-    vim.keymap.set('n', '<leader>B', function()
+    vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
+    vim.keymap.set('n', '<leader>dB', function()
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
     end, { desc = 'Debug: Set Breakpoint' })
+    vim.keymap.set('n', '<leader>de', dap.set_exception_breakpoints, { desc = 'Debug: Exception breakpoint' })
+
+
+    vim.fn.sign_define('DapBreakpoint', { text='●', texthl='DapBreakpoint', linehl='', numhl='DapBreakpoint' })
+    vim.fn.sign_define('DapBreakpointCondition', { text='●', texthl='DapBreakpoint', linehl='', numhl='DapBreakpoint' })
+    vim.fn.sign_define('DapBreakpointRejected', { text='', texthl='DapBreakpoint', linehl='', numhl= 'DapBreakpoint' })
+    vim.fn.sign_define('DapLogPoint', { text='', texthl='DapLogPoint', linehl='', numhl= 'DapLogPoint' })
+    vim.fn.sign_define('DapStopped', { text='', texthl='DapStopped', linehl='DapStopped', numhl= 'DapStopped' })
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
@@ -97,30 +116,46 @@ return {
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-    -- vim.keymap.set('n', '<leader>tt', vim.fn.findfile(vim.fn.input('path', vim.fn.getcwd() .. "/", "file"), ".;"))
-
     -- csharp adapter configuration
     dap.adapters.coreclr = {
       type = 'executable',
       command = 'netcoredbg',
       args = { '--interpreter=vscode' },
     }
+
     dap.configurations.cs = {
       {
         type = 'coreclr',
-        name = 'launch - netcoredbg',
+        name = 'launch - Project Picker',
         request = 'launch',
-        program = dotnet.getDebugdll,
+        program = function ()
+          if lastRun.program ~= nil then
+            return lastRun.program
+          end
+          local programdll = dotnet.getDebugdll()
+          lastRun.program = programdll
+          return programdll
+        end,
+        cwd = function ()
+          if lastRun.cwd ~= nil then
+            return lastRun.cwd
+          end
+          local projectPath = dotnet.selectProject()
+          local cwd = vim.fs.dirname(projectPath)
+          lastRun.cwd = cwd
+          return cwd
+        end,
+        env = {
+          ASPNETCORE_ENVIRONMENT = "Development",
+          environment= "Development"
+        }
       },
       {
         type = 'coreclr',
-        name = 'attach - netcoredbg',
+        name = 'attach - Proccess Picker',
         request = 'attach',
-        -- cwd = function ()
-        --   vim.fn.input('Path to csproj folder: ', vim.fn.getcwd(), 'file')
-        -- end,
         program = require('dap.utils').pick_process,
-      },
+      }
     }
   end,
 }
